@@ -29,10 +29,8 @@ se ambas os lados são válidos. Cada lado tem que ser um número, e
 só pode ser 1,2,3,4,5 ou 6
 '''
 def peca_valida(peca):
-    pecas_validas = [1, 2, 3, 4, 5, 6]
-    peca_direita = peca.direita
-    peca_esquerda = peca.esquerda
-    return peca_direita in pecas_validas and peca_esquerda in pecas_validas
+    pecas_validas = list(range(1, 7))
+    return peca.direita in pecas_validas and peca.esquerda in pecas_validas
 
 
 '''
@@ -41,23 +39,19 @@ Ou seja, posso colocar a peça2 logo depois da peça1, sem ter que virar
 nenhuma das duas? Sua funcao deve retornar True se as peças encaixam,
 false caso contrário.
 '''
-def encaixa(peca1,peca2):
-    peca1_direita = peca1.direita
-    peca2_esquerda = peca2.esquerda
-    return peca1_direita == peca2_esquerda
-    
+def encaixa(peca1, peca2):
+    return peca1.direita == peca2.esquerda
+
 
 '''
 Crie uma função "encaixa_de_algum_jeito" que recebe duas peças de dominó
 e verifica se existe alguma maneira de encaixar elas, girando as peças se
 necessário
 '''
-def encaixa_de_algum_jeito(peca1,peca2):
+def encaixa_de_algum_jeito(peca1, peca2):
     encaixa1 = encaixa(peca1,peca2)
     encaixa2 = encaixa(peca2,peca1)
     return encaixa1 or encaixa2 or peca1.direita == peca2.direita or peca1.esquerda == peca2.esquerda
-
-
 
 
 '''
@@ -69,8 +63,12 @@ Ela tenta colocar primeiro a peca1, depois a peca2 (girada ou nao)
 
 Retorna True se encaixa
 '''
-def encaixa_girando_so_a_segunda(peca1,peca2):
-    pass #tire o pass para escrever seu codigo
+def encaixa_girando_so_a_segunda(peca1, peca2):
+    if encaixa(peca1, peca2):
+        return True
+    else:
+        peca2.inverte()
+        return encaixa(peca1, peca2)
 
 '''
 Agora, vamos começar a pensar em jogos de dominó.
@@ -86,7 +84,10 @@ e retorna True se a lista representa um jogo valido (False caso
 contrário)
 '''
 def jogo_valido(jogo):
-    pass
+    if len(jogo) == 1:
+        return True
+    for peca in jogo:
+        return encaixa(peca, jogo[jogo.index(peca)+1])
 
 '''
 Crie uma funcao ciclo_valido, que recebe uma lista como acima, e se 
@@ -98,7 +99,8 @@ um número "livre". Esse número "livre" deve se encaixar com o número livre
 do primeiro.
 '''
 def ciclo_valido(jogo):
-    pass
+    if jogo_valido(jogo):
+        return encaixa(jogo[len(jogo)-1], jogo[0])
 
 '''
 Agora, vamos fingir que somos um jogador. Ele vê o jogo na mesa,
@@ -111,9 +113,15 @@ solta, e retorna a string 'atras' se a peça encaixa atrás,
 Se for necessário, você pode girar a peça para encaixar
 '''
 
-def jogador(jogo,peca):
-    pass
-
+def jogador(jogo, peca):
+    ultima_peca = jogo[len(jogo)-1]
+    primeira_peca = jogo[0]
+    peca_invertida = peca
+    peca_invertida.inverte()
+    if encaixa(ultima_peca, peca) or encaixa_girando_so_a_segunda(ultima_peca, peca):
+        return "frente"
+    if encaixa(peca, primeira_peca) or encaixa(peca, primeira_peca):
+        return "atras"
 
 
 '''
@@ -159,7 +167,7 @@ Se não existe, voce achou uma solução do jeito que tinha sido pedido
 def jogo_grande(pecas):
     return jogo_grande,pecas_sobrando
 
- 
+
 import unittest
 class TestClientes(unittest.TestCase):
     def test_01_direita(self):
@@ -294,4 +302,8 @@ class Domino():
 
 if __name__ == '__main__':
     teste = runTests()
-   
+    jogo = [Domino(3, 6)]
+    peca = Domino(3, 4)
+    peca_invertida = peca
+    peca_invertida.inverte()
+    print(jogador(jogo, peca))
