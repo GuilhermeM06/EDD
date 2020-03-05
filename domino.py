@@ -114,14 +114,15 @@ Se for necessário, você pode girar a peça para encaixar
 '''
 
 def jogador(jogo, peca):
-    ultima_peca = jogo[len(jogo)-1]
+    ultima_peca = jogo[-1]
     primeira_peca = jogo[0]
-    peca_invertida = peca
-    peca_invertida.inverte()
-    if encaixa(ultima_peca, peca) or encaixa_girando_so_a_segunda(ultima_peca, peca):
+    if encaixa_girando_so_a_segunda(ultima_peca, peca):
         return "frente"
-    if encaixa(peca, primeira_peca) or encaixa(peca, primeira_peca):
+    elif encaixa_girando_so_a_segunda(peca, primeira_peca):
         return "atras"
+    
+    return False
+    
 
 
 '''
@@ -302,8 +303,8 @@ class Domino():
 
 if __name__ == '__main__':
     teste = runTests()
-    jogo = [Domino(3, 6)]
+    jogo = [Domino(3, 3)]
     peca = Domino(3, 4)
-    peca_invertida = peca
-    peca_invertida.inverte()
+    # peca_invertida = peca
+    # peca_invertida.inverte()
     print(jogador(jogo, peca))
