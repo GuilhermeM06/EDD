@@ -57,10 +57,8 @@ def encaixa_de_algum_jeito(peca1, peca2):
 '''
 Crie uma funcao "encaixa_girando_so_a_segunda" que pode girar (ou nao)
 a segunda peça pra encaixar. 
-
 Ela tenta colocar primeiro a peca1, depois a peca2 (girada ou nao)
 , mas não gira a primeira
-
 Retorna True se encaixa
 '''
 def encaixa_girando_so_a_segunda(peca1, peca2):
@@ -74,11 +72,9 @@ def encaixa_girando_so_a_segunda(peca1, peca2):
 Agora, vamos começar a pensar em jogos de dominó.
 Um jogo é uma lista de dominós que se encaixam (na posicao atual,
 sem precisar girar).
-
 Repetindo: todos se encaixam. O dominó 0 se encaixa com o 1,
 o 1 com o 2, e assim até o domino len(lista)-2, que se encaixa com o
 len(lista)-1
-
 Crie uma funçao jogo_valido que recebe uma lista de dominós
 e retorna True se a lista representa um jogo valido (False caso
 contrário)
@@ -93,7 +89,6 @@ def jogo_valido(jogo):
 Crie uma funcao ciclo_valido, que recebe uma lista como acima, e se 
 certifica, como acima, que o dominó 0 encaixa com o 1, e o 1 com o 2
 e assim por diante.
-
 A diferenca é que devemos receber dessa vez um ciclo. O último dominó
 um número "livre". Esse número "livre" deve se encaixar com o número livre
 do primeiro.
@@ -105,11 +100,9 @@ def ciclo_valido(jogo):
 '''
 Agora, vamos fingir que somos um jogador. Ele vê o jogo na mesa,
 e tenta encaixar uma de suas peças.
-
 Escreva uma funcao jogador, que recebe um jogo e uma peça
 solta, e retorna a string 'atras' se a peça encaixa atrás,
 'frente' se ela encaixa na frente, e False se ela não encaixa
-
 Se for necessário, você pode girar a peça para encaixar
 '''
 
@@ -118,9 +111,8 @@ def jogador(jogo, peca):
     primeira_peca = jogo[0]
     if encaixa_girando_so_a_segunda(ultima_peca, peca):
         return "frente"
-    elif encaixa_girando_so_a_segunda(peca, primeira_peca):
+    elif encaixa(peca, primeira_peca) or peca.esquerda == primeira_peca.esquerda:
         return "atras"
-    
     return False
     
 
@@ -128,10 +120,8 @@ def jogador(jogo, peca):
 '''
 Já aprendemos a verificar se um jogo está OK. Agora, devemos
 aprender a montar um jogo.
-
 Antes disso, devemos aprender a colocar itens em uma lista, tanto
 no começo quanto no final
-
 Veja o exemplo:
    > lista = [1,2,3]
    > lista.insert(0,'comeco')
@@ -143,24 +133,21 @@ Veja o exemplo:
 '''
 Faça uma função no_comeco que recebe uma lista representando um jogo válido
 e uma peça que encaixa no começo do jogo.
-
 Ela deve colocar a peça no começo do jogo e retornar o novo jogo
 '''
 def no_comeco(jogo,peca):
-    pass
+    if encaixa(peca, jogo[0]) or peca.esquerda == jogo[0].esquerda:
+        jogo.insert(0, peca)
+        return jogo
 
 '''
 Façamos uma função jogo_grande que recebe uma lista de dominós (fora de ordem)
 e vai montando um jogo com a lista de dominós.
-
 A idéia é montar um jogo válido, de forma que nenhum dos dominós "sobrando"
 se encaixe (montar um jogo "travado", que não dá pra aumentar sem mexer nas 
 peças já colocadas)
-
 Tire as peças que você usar da lista de dominós
-
 Retorne seu jogo válido e a lista de peças que sobraram
-
 DICA: voce pode ir verificando se existe um dominó que ainda encaixa.
 Se existe, voce insere e começa a verificar de novo.
 Se não existe, voce achou uma solução do jeito que tinha sido pedido
@@ -302,9 +289,4 @@ class Domino():
         return self.esquerda == other.esquerda and self.direita == other.direita
 
 if __name__ == '__main__':
-    teste = runTests()
-    jogo = [Domino(3, 3)]
-    peca = Domino(3, 4)
-    # peca_invertida = peca
-    # peca_invertida.inverte()
-    print(jogador(jogo, peca))
+    runTests()
